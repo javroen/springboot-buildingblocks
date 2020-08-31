@@ -35,24 +35,24 @@ public class UserHateoasController {
 	@Autowired
 	private UserService userService;
 
-	@GetMapping
-	public CollectionModel<User> getAllUsers() throws UserNotFoundException {
-
-		CollectionModel<User> allUsers = userService.getAllUsers();
-		for (User user : allUsers) {
-			Long userid = user.getId();
-			Link selfLink = ControllerLinkBuilder.linkTo(this.getClass()).slash(userid).withSelfRel();
-			user.add(selfLink);
-
-			List<Order> orders = ControllerLinkBuilder.methodOn(OrderHateoasController.class).getAllOrders(userid);
-			Link ordersLink = ControllerLinkBuilder.linkTo(orders).withRel("all-orders");
-			user.add(ordersLink);
-		}
-
-		Link link = ControllerLinkBuilder.linkTo(this.getClass()).withSelfRel();
-		
-		return allUsers;
-	}
+//	@GetMapping
+//	public CollectionModel<User> getAllUsers() throws UserNotFoundException {
+//
+//		CollectionModel<User> allUsers = userService.getAllUsers();
+//		for (User user : allUsers) {
+//			Long userid = user.getId();
+//			Link selfLink = ControllerLinkBuilder.linkTo(this.getClass()).slash(userid).withSelfRel();
+//			user.add(selfLink);
+//
+//			List<Order> orders = ControllerLinkBuilder.methodOn(OrderHateoasController.class).getAllOrders(userid);
+//			Link ordersLink = ControllerLinkBuilder.linkTo(orders).withRel("all-orders");
+//			user.add(ordersLink);
+//		}
+//
+//		Link link = ControllerLinkBuilder.linkTo(this.getClass()).withSelfRel();
+//		
+//		return allUsers;
+//	}
 
 	@GetMapping("/{id}")
 	public RepresentationModel<User> getUserById(@PathVariable("id") @Min(3) Long id) {
