@@ -9,6 +9,7 @@ import javax.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,6 +29,11 @@ import com.stacksimplify.restservices.exception.UserNameNotFoundException;
 import com.stacksimplify.restservices.exception.UserNotFoundException;
 import com.stacksimplify.restservices.services.UserService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
+@Api(tags="User mgmt RESTful Services", value = "UserController")
 @Validated
 @RestController
 @RequestMapping(value = "/users")
@@ -36,15 +42,17 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	@GetMapping
+	@ApiOperation(value="Retrieve list of users")
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<User> getAllUsers() {
 		return userService.getAllUsers();
 	}
 	
 	@GetMapping("/{id}")
-	public Optional<User> getUserById(@PathVariable("id") @Min(3) Long id){
+	public User getUserById(@PathVariable("id") @Min(3) Long id){
 		try {
-			return userService.getUserById(id);
+			Optional<User> optionalUser = userService.getUserById(id);
+			return optionalUser.get();
 		} catch (UserNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
@@ -73,8 +81,9 @@ public class UserController {
 		userService.deleteUserById(id);
 	}
 	
+	@ApiOperation(value="Creates a new user")
 	@PostMapping
-	public ResponseEntity<Void> createUser(@Valid @RequestBody User user, UriComponentsBuilder builder) {
+	public ResponseEntity<Void> createUser(@ApiParam("User information for a new user to be created")@Valid @RequestBody User user, UriComponentsBuilder builder) {
 		try {
 			userService.createUser(user);
 			HttpHeaders headers = new HttpHeaders();

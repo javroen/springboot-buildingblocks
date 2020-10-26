@@ -15,21 +15,28 @@ import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+@ApiModel( description="This model is to create a user")
 @Entity
 @Table(name = "user")
 public class User extends RepresentationModel<User>{
 	
+	@ApiModelProperty(notes = "Auto generated unique id", required=true, position=1)
 	@Id
 	@GeneratedValue
 	@JsonView(Views.External.class)
 	private long id;
 	
+	@ApiModelProperty(notes = "unique user name", example="harry nack", required=false, position=0)
+	@Size(min=2, max=50, message="Username should have at least 2 charactersand max 50")
 	@NotEmpty(message="Username is mandatory")
 	@Column(name ="USER_NAME", length=50, nullable=false, unique=true)
 	@JsonView(Views.External.class)
 	private String username;
 	
-	@Size(min=2, message="Firstname should have at least 2 characters")
+	@Size(min=2, max=50, message="Firstname should have at least 2 characters")
 	@Column(name ="FIRST_NAME", length=50, nullable=false)
 	@JsonView(Views.External.class)
 	private String firstname;
